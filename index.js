@@ -1,14 +1,22 @@
-const path = require("path");
-const fs = require("fs");
-console.log(__dirname);
-const dirPath = path.join(__dirname, "files");
+const express = require("express");
+const multer = require("multer");
 
-for (i = 0; i < 5; i++) {
-  fs.writeFileSync(`${dirPath}/hello${i}.txt`, "Hello world!!");
-}
+const app = express();
 
-fs.readdir(dirPath, (err, files) => {
-  files.forEach((file) => {
-    console.log(`file name is ${file}`);
-  });
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: function (req, res, cb) {
+      cb(null, "uploads");
+    },
+    filename: function (req, file, cb) {
+      console.log(file);
+      cb(null, file.fieldname + "-" + Date.now() + ".jpg");
+    },
+  }),
+}).single("file");
+
+app.post("/upload", upload, (req, res) => {
+  res.send("Upload");
 });
+
+app.listen("5000");
