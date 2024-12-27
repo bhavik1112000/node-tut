@@ -1,14 +1,36 @@
-const path = require("path");
-const fs = require("fs");
-console.log(__dirname);
-const dirPath = path.join(__dirname, "files");
+const express = require("express");
+const product = require("./product");
+require("./config");
 
-for (i = 0; i < 5; i++) {
-  fs.writeFileSync(`${dirPath}/hello${i}.txt`, "Hello world!!");
-}
+const app = express();
 
-fs.readdir(dirPath, (err, files) => {
-  files.forEach((file) => {
-    console.log(`file name is ${file}`);
-  });
+app.use(express.json());
+
+app.post("/create", async (req, res) => {
+  const data = new product(req.body);
+  let result = await data.save();
+  // res.send("done");
+  res.send(result);
+
+  // console.log(req.body);
+  console.log(result);
 });
+
+app.get("/products", async (req, res) => {
+  const data = await product.find();
+  res.send(data);
+});
+
+app.delete("/delete/:_id", async (req, res) => {
+  const data = await product.deleteOne(req.params);
+  console.log(data);
+  res.send(data);
+});
+
+app.put("/update/:_id", async (req, res) => {
+  const data = await product.updateOne(req.params, { $set: req.body });
+  res.send(data);
+  console.log(data);
+});
+
+app.listen("5000");
