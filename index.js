@@ -1,14 +1,39 @@
-const path = require("path");
-const fs = require("fs");
-console.log(__dirname);
-const dirPath = path.join(__dirname, "files");
+// const fs = require("fs");
+const fsPromise = require("fs").promises;
 
-for (i = 0; i < 5; i++) {
-  fs.writeFileSync(`${dirPath}/hello${i}.txt`, "Hello world!!");
-}
+// fs.readFile("./sample.txt", "utf-8", (err, data) => {
+//   if (err) throw new Error("Something went wrong");
+//   console.log(data);
+// });
 
-fs.readdir(dirPath, (err, files) => {
-  files.forEach((file) => {
-    console.log(`file name is ${file}`);
-  });
-});
+// const data = fs.readFileSync("./sample.txt", "utf-8");
+// console.log(data);
+
+// const readFile = async () => {
+//   try {
+//     const data = await fsPromise.readFile("./sample.txt", "utf-8");
+//     console.log(data);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+// readFile();
+
+// fs.writeFile("./sample.txt", "How are you?", (err) => {
+//   if (err) throw new Error("Something went wrong");
+//   console.log("File written successfully");
+// });
+
+const writingInFile = async () => {
+  try {
+    await fsPromise.appendFile("./sample.txt", "\n Something appended1");
+    const data = await fsPromise.readFile("./sample.txt", "utf-8");
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+writingInFile();
+
+//utf-8 or data.toString()
