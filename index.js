@@ -1,14 +1,29 @@
-const path = require("path");
-const fs = require("fs");
-console.log(__dirname);
-const dirPath = path.join(__dirname, "files");
+const express = require("express");
+const EventEmmiter = require("events");
 
-for (i = 0; i < 5; i++) {
-  fs.writeFileSync(`${dirPath}/hello${i}.txt`, "Hello world!!");
-}
+const event = new EventEmmiter();
 
-fs.readdir(dirPath, (err, files) => {
-  files.forEach((file) => {
-    console.log(`file name is ${file}`);
-  });
+let count = 0;
+
+event.on("countApi", () => {
+  count++;
+  console.log(count);
 });
+
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("api called");
+  event.emit("countApi");
+});
+
+app.get("/search", (req, res) => {
+  res.send("search api called");
+  event.emit("countApi");
+});
+
+app.get("/update", (req, res) => {
+  res.send("update api called");
+});
+
+app.listen("5000");
